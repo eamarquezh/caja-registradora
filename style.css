@@ -25,12 +25,12 @@ a:hover {
 
 body {
   margin: 0;
+  padding: 0;
   min-width: 320px;
   min-height: 100vh;
 }
 
 div{
-  min-width: 30vh;
   border-radius: 5px;
   border: 0.01px dotted #ffffff;
   min-width: 300px;
@@ -54,6 +54,7 @@ h2 {
   margin: 0 auto;
   text-align: center;
   padding: 1rem;
+  height: 95vh;
 }
 
 .logo {

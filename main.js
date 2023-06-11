@@ -14,7 +14,9 @@ function label(){return document.createElement('label');}
 function table(){return document.createElement('table');}
 function tr(){return document.createElement('tr');}
 function th(){return document.createElement('th');}
+function tbody(){return document.createElement('tbody');}
 function td(){return document.createElement('td');}
+
 
 function alertF(msg,color){
   const divAl =document.createElement('div');
@@ -73,8 +75,10 @@ const producto_a=input();
 producto_a.placeholder='Producto';
 const compra_a=input();
 compra_a.placeholder='Precio compra';
+compra_a.type='number';
 const venta_a=input();
 venta_a.placeholder='Precio venta';
+venta_a.type='number';
 const lfecha = label();
 lfecha.textContent='Fecha';
 lfecha.for='fecha_a';
@@ -88,7 +92,7 @@ guardar.textContent='guardar';
 const borrar=button();
 borrar.textContent='borrar';
 
-lienzo.appendChild(contAdmin1);
+//lienzo.appendChild(contAdmin1);
 
 contAdmin1.appendChild(t_registro_inventario);
 contAdmin1.appendChild(id_producto);
@@ -108,7 +112,7 @@ contAdmin1.appendChild(guardar);
 contAdmin1.appendChild(borrar);
 
 
-//admin2
+// inventario admin2 y vendedor2
 const t_tabla_inventario=h2();
 t_tabla_inventario.textContent="Tabla Inventario";
 const contAdmin2=div();
@@ -117,7 +121,7 @@ const row_titulo=tr();
 const campo_id=th();
 campo_id.textContent='id';
 const campo_producto=th();
-campo_producto.textContent='Producto';
+campo_producto.textContent='producto';
 const campo_compra=th();
 campo_compra.textContent='compra';
 const campo_venta=th();
@@ -127,13 +131,16 @@ campo_fecha.textContent='fecha';
 const campo_cantidad=th();
 campo_cantidad.textContent='cantidad';
 const campo_modificar=th();
-campo_modificar.textContent='modificar';
+campo_modificar.textContent='acción';
+const conte_tabla = tbody();
 
-lienzo.appendChild(contAdmin2);
+
+//lienzo.appendChild(contAdmin2);
 contAdmin2.appendChild(t_tabla_inventario);
 contAdmin2.appendChild(br());
 contAdmin2.appendChild(tabla_inventario);
 tabla_inventario.appendChild(row_titulo);
+tabla_inventario.appendChild(conte_tabla);
 row_titulo.appendChild(campo_id);
 row_titulo.appendChild(campo_producto);
 row_titulo.appendChild(campo_compra);
@@ -147,7 +154,7 @@ const resumen_venta=h2();
 resumen_venta.textContent="Resumen ventas";
 const contAdmin3=div();
 
-lienzo.appendChild(contAdmin3);
+//lienzo.appendChild(contAdmin3);
 contAdmin3.appendChild(resumen_venta);
 
 //admin4
@@ -155,5 +162,57 @@ const t_empleados=h2();
 t_empleados.textContent="Empleados";
 const contAdmin4=div();
 
-lienzo.appendChild(contAdmin4);
-contAdmin4.appendChild(t_empleados);
+//lienzo.appendChild(contAdmin4);
+//contAdmin4.appendChild(t_empleados);
+
+
+//vendedor
+
+
+const contVendedor1=div();
+const vender_empleado=h2();
+vender_empleado.textContent="Vender";
+const busqueda=input();
+busqueda.placeholder="Busqueda"
+const n_productos=input();
+n_productos.placeholder="Cantidad"
+n_productos.type="number";
+const btn_buscar=button();
+btn_buscar.textContent="Buscar";
+const btn_agregar=button();
+btn_agregar.textContent="Agregar";
+const btn_quitar=button();
+btn_quitar.textContent="Quitar";
+const tiket=div();
+const btn_vender=button();
+btn_vender.textContent="Vender e imprimir";
+
+lienzo.appendChild(contVendedor1);
+contVendedor1.appendChild(vender_empleado);
+contVendedor1.appendChild(busqueda);
+contVendedor1.appendChild(br());
+contVendedor1.appendChild(n_productos);
+contVendedor1.appendChild(br());
+contVendedor1.appendChild(btn_buscar);
+contVendedor1.appendChild(br());
+contVendedor1.appendChild(btn_agregar);
+contVendedor1.appendChild(btn_quitar);
+contVendedor1.appendChild(br());
+contVendedor1.appendChild(tiket);
+contVendedor1.appendChild(br());
+contVendedor1.appendChild(btn_vender);
+
+
+
+const inventario_empleado=h2();
+inventario_empleado.textContent="Tabla Inventario";
+const contVendedor2=div();
+
+
+
+lienzo.appendChild(contVendedor2);
+contVendedor2.appendChild(inventario_empleado);
+contVendedor2.appendChild(tabla_inventario);
+
+
+
