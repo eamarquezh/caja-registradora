@@ -14,7 +14,7 @@ if (!$resultado = $conexion->query($consulta)) {
     echo ('Noo');
     exit;
 }
-
+sleep(2);
 $consulta = "select * from caja_registradora.inventario;";
 if (!$resultado = $conexion->query($consulta)) {
     echo ('Noo');

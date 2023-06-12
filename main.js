@@ -245,9 +245,24 @@ ingresar.addEventListener('click',()=>{
 });
 
 guardar.addEventListener('click',()=>{
-  
+  let a = id_producto.value.length;
+  let b = producto_a.value.length;
+  let c = compra_a.value.length;
+  let d = venta_a.value.length;
+  let e = fecha_a.value.length;
+  let f = cantidad_a.value.length;
+if(a>0 & b>0 & c>0 & d>0 & e>0 & f>0){
   insertarInventario();
-  verInventario();
+  id_producto.value='';
+  producto_a.value='';
+  compra_a.value='';
+  venta_a.value='';
+  fecha_a.value='';
+  cantidad_a.value='';
+}else{
+  alertF('Llenar todos los campos','red');
+}
+  
 });
 
 
@@ -290,7 +305,18 @@ async function insertarInventario(){
   })
   .then(response=>response.json())
   .then(data=>{
-
+    let cadena='';
+      data.forEach(element => {
+        cadena+='<tr>';
+        cadena+='<td>'+element.id_producto+'</td>';
+        cadena+='<td>'+element.producto_a+'</td>';
+        cadena+='<td>'+element.compra_a+'</td>';
+        cadena+='<td>'+element.venta_a+'</td>';
+        cadena+='<td>'+element.fecha_a+'</td>';
+        cadena+='<td>'+element.cantidad_a+'</td>';
+        cadena+='</tr>';
+      });
+      conte_tabla.innerHTML=cadena;
   });
 }
 
@@ -315,9 +341,6 @@ async function verInventario(){
       conte_tabla.innerHTML=cadena;
   });
 }
-
-
-
 
 
 
