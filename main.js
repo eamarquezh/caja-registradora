@@ -156,8 +156,10 @@ contAdmin3.appendChild(resumen_venta);
 const t_empleados=h2();
 t_empleados.textContent="Empleados";
 const contAdmin4=div();
+const lisEmpleados=h2();
 
 contAdmin4.appendChild(t_empleados);
+contAdmin4.appendChild(lisEmpleados);
 
 
 function administradorF(){
@@ -278,6 +280,7 @@ async function ingresarFunction(){
   .then(data=>{
       if(data[0].perfil=='Administrador'){
         verInventario();
+        verUsuario();
         administradorF();
         loginC();
         alertF('Administrador','#000');
@@ -290,6 +293,31 @@ async function ingresarFunction(){
       }
   });
 }
+
+
+async function modificarInventario(id_modificacion){
+  let formData_inventario = new FormData();           
+  formData_inventario.append('id_modificacion', id_modificacion);
+  await fetch('modificar.php',{
+    method: "POST", 
+    body: formData_inventario
+  })
+  .then(response=>response.json())
+  .then(data=>{
+      //console.log(data);
+      data.forEach(element => {
+
+        id_producto.value=element.id_producto;
+        //cadena+='<td>'+element.producto_a+'</td>';
+        //cadena+='<td>'+element.compra_a+'</td>';
+        //cadena+='<td>'+element.venta_a+'</td>';
+        //cadena+='<td>'+element.fecha_a+'</td>';
+        //cadena+='<td>'+element.cantidad_a+'</td>';
+        
+      });
+  });
+}
+
 
 async function insertarInventario(){
   let formData_inventario = new FormData();           
@@ -307,14 +335,7 @@ async function insertarInventario(){
   .then(data=>{
     let cadena='';
       data.forEach(element => {
-        cadena+='<tr>';
-        cadena+='<td>'+element.id_producto+'</td>';
-        cadena+='<td>'+element.producto_a+'</td>';
-        cadena+='<td>'+element.compra_a+'</td>';
-        cadena+='<td>'+element.venta_a+'</td>';
-        cadena+='<td>'+element.fecha_a+'</td>';
-        cadena+='<td>'+element.cantidad_a+'</td>';
-        cadena+='</tr>';
+
       });
       conte_tabla.innerHTML=cadena;
   });
@@ -336,9 +357,39 @@ async function verInventario(){
         cadena+='<td>'+element.venta_a+'</td>';
         cadena+='<td>'+element.fecha_a+'</td>';
         cadena+='<td>'+element.cantidad_a+'</td>';
+        cadena+='<td><button id="'+element.id_producto+'" class="myButton">modificar</button></td>';
         cadena+='</tr>';
       });
       conte_tabla.innerHTML=cadena;
+      lista();
+  });
+}
+
+function lista(){
+ const myButtons = document.querySelectorAll('.myButton');
+console.log(myButtons);
+
+
+  myButtons.forEach(button => {
+    button.onclick = () => modificarInventario(button.id);
+    console.log(button.id);
+  });
+
+}
+  
+
+
+
+
+async function verUsuario(){
+  await fetch('verusuarios.php')
+  .then(response=>response.json())
+  .then(data=>{
+      //console.log(data);
+
+      data.forEach(element => {
+        lisEmpleados.innerHTML+='<div>'+element.usuario+'</div>';
+      });
   });
 }
 
