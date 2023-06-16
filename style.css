@@ -110,6 +110,14 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+label{
+  color: #535bf2;
+}
+.boton-fijo {
+  position: fixed;
+  top: 0px; /* Ajusta la distancia desde la parte superior */
+  right: 0px; /* Ajusta la distancia desde la derecha */
+}
 input {
   margin: 0.5rem;
   border-radius: 8px;
@@ -155,7 +163,7 @@ button:focus-visible {
   overflow:scroll;
   border-radius: 5px;
   border: 0.01px dotted #ffffff;
-  max-height: 400px;
+  max-height: 500px;
   margin: .5rem;
   padding: .5rem;
 }
@@ -169,7 +177,7 @@ table {
 }
 
 th, td {
-  padding: 10px;
+  padding: 2px;
   border-top: 1px solid white;
   border-bottom: 1px solid white;
 }

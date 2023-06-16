@@ -4,6 +4,7 @@ const viteLogo = './boxes.svg';
 const lienzo = document.getElementById('app');
 
 function br(){return document.createElement('br');}
+function i(){return document.createElement('i');}
 function h1(){return document.createElement('h1');}
 function h2(){return document.createElement('h2');}
 function div(){return document.createElement('div');}
@@ -31,6 +32,10 @@ function alertF(msg,color){
   }, 3000);
 }
 
+const ses=label();
+const closeB=button();
+closeB.textContent='<i class="bi bi-x-square"></i>';
+ses.className='boton-fijo'
 
 
 //Login
@@ -188,8 +193,10 @@ vender_empleado.textContent="Vender";
 const busqueda=input();
 busqueda.placeholder="Busqueda"
 const n_productos=input();
-n_productos.placeholder="Cantidad"
-n_productos.type="number";
+n_productos.placeholder="producto"
+const n_cantidad=input();
+n_cantidad.placeholder="Cantidad"
+n_cantidad.type="number";
 const btn_buscar=button();
 btn_buscar.textContent="Buscar";
 const btn_agregar=button();
@@ -201,10 +208,13 @@ const btn_vender=button();
 btn_vender.textContent="Vender e imprimir";
 
 
+
 contVendedor1.appendChild(vender_empleado);
 contVendedor1.appendChild(busqueda);
 contVendedor1.appendChild(br());
 contVendedor1.appendChild(n_productos);
+contVendedor1.appendChild(br());
+contVendedor1.appendChild(n_cantidad);
 contVendedor1.appendChild(br());
 contVendedor1.appendChild(btn_buscar);
 contVendedor1.appendChild(br());
@@ -222,7 +232,10 @@ inventario_empleado.textContent="Tabla Inventario";
 const contVendedor2=div();
 
 contVendedor2.appendChild(inventario_empleado);
+contVendedor2.className='d-scroll';
 
+
+closeB.addEventListener('click',()=>location.href='./index.html');
 
 function vendedorF(){
   lienzo.appendChild(contVendedor1);
@@ -233,14 +246,6 @@ function vendedorC(){
   lienzo.removeChild(contVendedor1);
   lienzo.removeChild(contVendedor2);
 }
-
-
-
-
-
-
-
-
 
 ingresar.addEventListener('click',()=>{
   ingresarFunction();
@@ -279,12 +284,19 @@ async function ingresarFunction(){
   .then(response=>response.json())
   .then(data=>{
       if(data[0].perfil=='Administrador'){
+        ses.textContent+='Administrador';
+        lienzo.appendChild(ses);
+        ses.appendChild(closeB);
         verInventario();
         verUsuario();
         administradorF();
         loginC();
         alertF('Administrador','#000');
       }else if(data[0].perfil=='Vendedor'){
+        ses.textContent='Vendedor';
+        lienzo.appendChild(ses);
+        ses.appendChild(closeB);
+        verInventarioE();
         vendedorF();
         loginC();
         alertF('Vendedor','#000');
@@ -305,21 +317,53 @@ async function modificarInventario(id_modificacion){
   .then(response=>response.json())
   .then(data=>{
       //console.log(data);
+      id_producto.value='';
+      producto_a.value='';
+      compra_a.value='';
+      venta_a.value='';
+      fecha_a.value='';
+      cantidad_a.value='';
       data.forEach(element => {
 
         id_producto.value=element.id_producto;
-        //cadena+='<td>'+element.producto_a+'</td>';
-        //cadena+='<td>'+element.compra_a+'</td>';
-        //cadena+='<td>'+element.venta_a+'</td>';
-        //cadena+='<td>'+element.fecha_a+'</td>';
-        //cadena+='<td>'+element.cantidad_a+'</td>';
+        producto_a.value=element.producto_a;
+        compra_a.value=element.compra_a;
+        venta_a.value=element.venta_a;
+        fecha_a.value=element.fecha_a;
+        cantidad_a.value=element.cantidad_a;
+        
+      });
+  });
+}
+
+async function modificarInventarioE(id_modificacion){
+  let formData_inventario = new FormData();           
+  formData_inventario.append('id_modificacion', id_modificacion);
+  await fetch('modificar.php',{
+    method: "POST", 
+    body: formData_inventario
+  })
+  .then(response=>response.json())
+  .then(data=>{
+      //console.log(data);
+      busqueda.value='';
+      n_productos.value='';
+      n_cantidad.value='';
+      data.forEach(element => {
+
+        busqueda.value=element.id_producto;
+        n_productos.value=element.producto_a;
+        n_cantidad.max=element.cantidad_a;
         
       });
   });
 }
 
 
+
+let arr=[];
 async function insertarInventario(){
+  conte_tabla.innerHTML='';
   let formData_inventario = new FormData();           
   formData_inventario.append('id_producto', id_producto.value);
   formData_inventario.append('producto_a', producto_a.value);
@@ -334,22 +378,9 @@ async function insertarInventario(){
   .then(response=>response.json())
   .then(data=>{
     let cadena='';
+      arr=[];
       data.forEach(element => {
-
-      });
-      conte_tabla.innerHTML=cadena;
-  });
-}
-
-
-
-async function verInventario(){
-  await fetch('inventario.php')
-  .then(response=>response.json())
-  .then(data=>{
-      //console.log(data);
-      let cadena='';
-      data.forEach(element => {
+        arr.push(element.id_producto);
         cadena+='<tr>';
         cadena+='<td>'+element.id_producto+'</td>';
         cadena+='<td>'+element.producto_a+'</td>';
@@ -357,7 +388,7 @@ async function verInventario(){
         cadena+='<td>'+element.venta_a+'</td>';
         cadena+='<td>'+element.fecha_a+'</td>';
         cadena+='<td>'+element.cantidad_a+'</td>';
-        cadena+='<td><button id="'+element.id_producto+'" class="myButton">modificar</button></td>';
+        cadena+='<td><button class="myButton">modificar</button></td>';
         cadena+='</tr>';
       });
       conte_tabla.innerHTML=cadena;
@@ -365,17 +396,69 @@ async function verInventario(){
   });
 }
 
+async function verInventario(){
+  await fetch('inventario.php')
+  .then(response=>response.json())
+  .then(data=>{
+      //console.log(data);
+      let cadena='';
+      arr=[];
+      data.forEach(element => {
+        arr.push(element.id_producto);
+        cadena+='<tr>';
+        cadena+='<td>'+element.id_producto+'</td>';
+        cadena+='<td>'+element.producto_a+'</td>';
+        cadena+='<td>'+element.compra_a+'</td>';
+        cadena+='<td>'+element.venta_a+'</td>';
+        cadena+='<td>'+element.fecha_a+'</td>';
+        cadena+='<td>'+element.cantidad_a+'</td>';
+        cadena+='<td><button class="myButton">modificar</button></td>';
+        cadena+='</tr>';
+      });
+      conte_tabla.innerHTML=cadena;
+      lista();
+  });
+}
+
+async function verInventarioE(){
+  await fetch('inventario.php')
+  .then(response=>response.json())
+  .then(data=>{
+      //console.log(data);
+      let cadena='';
+      arr=[];
+      data.forEach(element => {
+        arr.push(element.id_producto);
+        cadena+='<tr>';
+        cadena+='<td>'+element.id_producto+'</td>';
+        cadena+='<td>'+element.producto_a+'</td>';
+        cadena+='<td>'+element.compra_a+'</td>';
+        cadena+='<td>'+element.venta_a+'</td>';
+        cadena+='<td>'+element.fecha_a+'</td>';
+        cadena+='<td>'+element.cantidad_a+'</td>';
+        cadena+='<td><button class="myButton2">Elegir</button></td>';
+        cadena+='</tr>';
+      });
+      conte_tabla.innerHTML=cadena;
+      lista2();
+  });
+}
+
+
 function lista(){
  const myButtons = document.querySelectorAll('.myButton');
-console.log(myButtons);
-
-
-  myButtons.forEach(button => {
-    button.onclick = () => modificarInventario(button.id);
-    console.log(button.id);
+  myButtons.forEach((button,i) => {
+    button.onclick = () => modificarInventario(arr[i]);
   });
-
 }
+
+function lista2(){
+  const myButtons2 = document.querySelectorAll('.myButton2');
+   myButtons2.forEach((button,i) => {
+     button.onclick = () => modificarInventarioE(arr[i]);
+   });
+ 
+ }
   
 
 
