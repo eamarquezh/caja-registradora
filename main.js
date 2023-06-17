@@ -164,8 +164,13 @@ row_titulo.appendChild(campo_modificar);
 const resumen_venta=h2();
 resumen_venta.textContent="Resumen ventas";
 const contAdmin3=div();
+const contRes=div();
+const descargarV =button();
+descargarV.textContent='Descarga ventas';
 
 contAdmin3.appendChild(resumen_venta);
+contAdmin3.appendChild(contRes);
+contAdmin3.appendChild(descargarV);
 
 //admin4
 const t_empleados=h2();
@@ -204,12 +209,14 @@ const busqueda=input();
 busqueda.placeholder="Busqueda"
 const n_productos=input();
 n_productos.placeholder="producto"
+n_productos.readOnly=true
 const n_cantidad=input();
 n_cantidad.placeholder="Cantidad"
 n_cantidad.type="number";
 const n_precio=input();
 n_precio.placeholder="Precio"
 n_precio.type="number";
+n_precio.readOnly=true
 const btn_buscar=button();
 btn_buscar.textContent="Buscar";
 const btn_agregar=button();
@@ -246,6 +253,7 @@ const inventario_empleado=h2();
 inventario_empleado.textContent="Tabla Inventario";
 const contVendedor2=div();
 
+
 contVendedor2.appendChild(inventario_empleado);
 contVendedor2.className='d-scroll';
 
@@ -256,6 +264,7 @@ function vendedorF(){
   lienzo.appendChild(contVendedor1);
   contVendedor2.appendChild(tabla_inventario);
   lienzo.appendChild(contVendedor2);
+  
 }
 function vendedorC(){
   lienzo.removeChild(contVendedor1);
@@ -303,6 +312,7 @@ async function ingresarFunction(){
         lienzo.appendChild(ses);
         ses.appendChild(closeB);
         verInventario();
+        verResumen();
         verUsuario();
         administradorF();
         loginC();
@@ -472,6 +482,28 @@ async function verInventario(){
   });
 }
 
+
+async function verResumen(){
+  await fetch('verresumen.php')
+  .then(response=>response.json())
+  .then(data=>{
+      let cadena='';
+      cadena+='<table>';
+      cadena+='<tr><th>top 10 productos</th><th>total</th></tr>';    
+      data.forEach(element => {
+        cadena+='<tr>';
+        cadena+='<td>'+element.producto+'</td>';
+        cadena+='<td>'+element.total+'</td>';
+        cadena+='</tr>';
+      });
+      cadena+='</table>';
+      contRes.innerHTML=cadena;
+  });
+}
+
+
+
+
 async function searchInventario(){
   conte_tabla.innerHTML='';
   let formData_inventario = new FormData();           
@@ -564,7 +596,7 @@ let lista_de_productos = [];
 function dibujarObjeto(){
   let cadena='';
   cadena+='<table>'
-  cadena+='<tr><th>producto</th><th>cantidad</th><th>total</th></tr>'
+  cadena+='<tr><th>producto</th><th>cantidad</th><th>total</th></tr>';
   lista_de_productos.forEach((elemento)=>{
     cadena+='<tr>';
     cadena+='<td>'+elemento.producto+'</td>';
@@ -583,7 +615,11 @@ function addListaProductos(){
   let b = n_cantidad.value.length;
   let c = n_precio.value.length;
   let d = n_cantidad.getAttribute('max');
-if(a>0 & b>0 & c>0 & b<=d & e<=0){
+  let f = parseInt(n_cantidad.value);
+  console.log('maximo'+d);
+  console.log('valor'+f);
+  console.log(f<=d);
+if(a>0 & b>0 & c>0 & f<=d & e<=0){
   lista_de_productos.push(
     {
       producto: n_productos.value,
@@ -655,7 +691,7 @@ async function crearPDF() {
 
 
 async function guardarVenta(){
-  console,console.log(lista_de_productos);
+  tiket.innerHTML='';
   conte_tabla.innerHTML='';
   //const jsonData = JSON.stringify(lista_de_productos);           
   await fetch('guardarventa.php', {
@@ -684,7 +720,25 @@ async function guardarVenta(){
       conte_tabla.innerHTML=cadena;
       lista2();
   });
+  crearPDF();
 }
+
+
+descargarV.addEventListener("click", function() {
+
+  fetch('descargaventas.php')
+  .then(response => response.json())
+  .then(miArray => {
+      let link = document.createElement('a');
+      link.download = 'ventas.csv';
+      let blob = new Blob(miArray, {type: 'text/plain'});
+      link.href = URL.createObjectURL(blob);
+      link.click();
+
+      URL.revokeObjectURL(link.href);
+      console.log(miArray); // Aquí se muestra el array recibido desde PHP
+  });
+});
 
 
 loginF();
