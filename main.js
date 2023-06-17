@@ -736,7 +736,6 @@ descargarV.addEventListener("click", function() {
       link.click();
 
       URL.revokeObjectURL(link.href);
-      console.log(miArray); // Aquí se muestra el array recibido desde PHP
   });
 });
 
