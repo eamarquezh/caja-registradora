@@ -17,6 +17,7 @@ function tr(){return document.createElement('tr');}
 function th(){return document.createElement('th');}
 function tbody(){return document.createElement('tbody');}
 function td(){return document.createElement('td');}
+function form(){return document.createElement('form');}
 
 
 function alertF(msg,color){
@@ -34,8 +35,8 @@ function alertF(msg,color){
 
 const ses=label();
 const closeB=button();
-closeB.textContent='<i class="bi bi-x-square"></i>';
-ses.className='boton-fijo'
+closeB.innerHTML='<i class="bi bi-x-square"></i>';
+ses.className='boton-fijo';
 
 
 //Login
@@ -46,23 +47,31 @@ const tituloLogin=h1();
 tituloLogin.textContent="Inicio de Sesion";
 
 const contLogin=div();
-
+const formulario=form();
 const usuario=input();
-usuario.placeholder="Ingresa usuario"
+usuario.placeholder="Ingresa usuario";
 const contrasenia=input();
-contrasenia.placeholder="Ingresa contraseña"
+contrasenia.placeholder="Ingresa contraseña";
 contrasenia.type='password';
+contrasenia.autocomplete='section-red shipping pass current-password';
 const ingresar=button();
 ingresar.textContent='Ingresar';
+
+formulario.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  // Aquí puedes realizar acciones adicionales antes de enviar el formulario o ejecutar otras funciones
+});
 
 //show login
 contLogin.appendChild(logo);
 contLogin.appendChild(tituloLogin);
-contLogin.appendChild(usuario);
-contLogin.appendChild(br());
-contLogin.appendChild(contrasenia);
-contLogin.appendChild(br());
-contLogin.appendChild(ingresar);
+contLogin.appendChild(formulario);
+formulario.appendChild(usuario);
+formulario.appendChild(br());
+formulario.appendChild(contrasenia);
+formulario.appendChild(br());
+formulario.appendChild(ingresar);
 
 function loginF(){
   lienzo.appendChild(contLogin);
@@ -197,6 +206,9 @@ n_productos.placeholder="producto"
 const n_cantidad=input();
 n_cantidad.placeholder="Cantidad"
 n_cantidad.type="number";
+const n_precio=input();
+n_precio.placeholder="Precio"
+n_precio.type="number";
 const btn_buscar=button();
 btn_buscar.textContent="Buscar";
 const btn_agregar=button();
@@ -215,6 +227,8 @@ contVendedor1.appendChild(br());
 contVendedor1.appendChild(n_productos);
 contVendedor1.appendChild(br());
 contVendedor1.appendChild(n_cantidad);
+contVendedor1.appendChild(br());
+contVendedor1.appendChild(n_precio);
 contVendedor1.appendChild(br());
 contVendedor1.appendChild(btn_buscar);
 contVendedor1.appendChild(br());
@@ -235,7 +249,7 @@ contVendedor2.appendChild(inventario_empleado);
 contVendedor2.className='d-scroll';
 
 
-closeB.addEventListener('click',()=>location.href='./index.html');
+closeB.addEventListener('click',()=>location.href='./');
 
 function vendedorF(){
   lienzo.appendChild(contVendedor1);
@@ -277,7 +291,7 @@ async function ingresarFunction(){
   let formData_ingresar = new FormData();           
   formData_ingresar.append("usuario", usuario.value);
   formData_ingresar.append("contrasenia", contrasenia.value);
-  await fetch('./ingresar.php', {
+  await fetch('ingresar.php', {
       method: "POST", 
       body: formData_ingresar
   })
@@ -354,6 +368,7 @@ async function modificarInventarioE(id_modificacion){
         busqueda.value=element.id_producto;
         n_productos.value=element.producto_a;
         n_cantidad.max=element.cantidad_a;
+        n_precio.value=element.venta_a;
         
       });
   });
@@ -396,12 +411,77 @@ async function insertarInventario(){
   });
 }
 
+borrar.addEventListener('click',borrarInventario);
+async function borrarInventario(){
+  conte_tabla.innerHTML='';
+  let formData_inventario = new FormData();           
+  formData_inventario.append('id_producto', id_producto.value);
+  await fetch('eliminarinventario.php', {
+      method: "POST", 
+      body: formData_inventario
+  })
+  .then(response=>response.json())
+  .then(data=>{
+    let cadena='';
+      arr=[];
+      data.forEach(element => {
+        arr.push(element.id_producto);
+        cadena+='<tr>';
+        cadena+='<td>'+element.id_producto+'</td>';
+        cadena+='<td>'+element.producto_a+'</td>';
+        cadena+='<td>'+element.compra_a+'</td>';
+        cadena+='<td>'+element.venta_a+'</td>';
+        cadena+='<td>'+element.fecha_a+'</td>';
+        cadena+='<td>'+element.cantidad_a+'</td>';
+        cadena+='<td><button class="myButton">modificar</button></td>';
+        cadena+='</tr>';
+      });
+      conte_tabla.innerHTML=cadena;
+      lista();
+  });
+}
+
+
+
+
+
+
+
 async function verInventario(){
   await fetch('inventario.php')
   .then(response=>response.json())
   .then(data=>{
       //console.log(data);
       let cadena='';
+      arr=[];
+      data.forEach(element => {
+        arr.push(element.id_producto);
+        cadena+='<tr>';
+        cadena+='<td>'+element.id_producto+'</td>';
+        cadena+='<td>'+element.producto_a+'</td>';
+        cadena+='<td>'+element.compra_a+'</td>';
+        cadena+='<td>'+element.venta_a+'</td>';
+        cadena+='<td>'+element.fecha_a+'</td>';
+        cadena+='<td>'+element.cantidad_a+'</td>';
+        cadena+='<td><button class="myButton">modificar</button></td>';
+        cadena+='</tr>';
+      });
+      conte_tabla.innerHTML=cadena;
+      lista();
+  });
+}
+
+async function searchInventario(){
+  conte_tabla.innerHTML='';
+  let formData_inventario = new FormData();           
+  formData_inventario.append('id_producto', busqueda.value);
+  await fetch('buscarinventario.php', {
+      method: "POST", 
+      body: formData_inventario
+  })
+  .then(response=>response.json())
+  .then(data=>{
+    let cadena='';
       arr=[];
       data.forEach(element => {
         arr.push(element.id_producto);
@@ -475,6 +555,62 @@ async function verUsuario(){
       });
   });
 }
+
+
+
+let lista_de_productos = [];
+
+function dibujarObjeto(){
+  let cadena='';
+  cadena+='<table>'
+  cadena+='<tr><th>producto</th><th>cantidad</th><th>total</th></tr>'
+  lista_de_productos.forEach((elemento)=>{
+    cadena+='<tr>';
+    cadena+='<td>'+elemento.producto+'</td>';
+    cadena+='<td>'+elemento.cantidad+'</td>';
+    cadena+='<td>'+elemento.total+'</td>';
+    cadena+='</tr>';
+  });
+  cadena+='</table>';
+  tiket.innerHTML=cadena;
+}
+
+function addListaProductos(){
+  let productoBuscado = n_productos.value;
+  let e = lista_de_productos.filter((producto)=> producto.producto===productoBuscado).length;
+  let a = n_productos.value.length;
+  let b = n_cantidad.value.length;
+  let c = n_precio.value.length;
+  let d = n_cantidad.getAttribute('max');
+if(a>0 & b>0 & c>0 & b<=d & e<=0){
+  lista_de_productos.push(
+    {
+      producto: n_productos.value,
+      cantidad: n_cantidad.value,
+      total:(n_cantidad.value*n_precio.value),
+    });
+  busqueda.value='';
+  n_productos.value='';
+  n_cantidad.value='';
+  n_precio.value='';
+  alertF('producto agregado','black');
+}else{
+  alertF('Llenar correctamente los campos','red');
+}
+dibujarObjeto();
+}
+
+function quitListaProductos(){
+  lista_de_productos.pop();
+  alertF('Registro eliminado','black');
+  dibujarObjeto();
+}
+
+btn_agregar.addEventListener('click',addListaProductos);
+btn_quitar.addEventListener('click',quitListaProductos);
+btn_buscar.addEventListener('click',searchInventario);
+
+
 
 
 
