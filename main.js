@@ -1,4 +1,5 @@
 import './style.css';
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 const viteLogo = './boxes.svg';
 
 const lienzo = document.getElementById('app');
@@ -492,11 +493,11 @@ async function searchInventario(){
         cadena+='<td>'+element.venta_a+'</td>';
         cadena+='<td>'+element.fecha_a+'</td>';
         cadena+='<td>'+element.cantidad_a+'</td>';
-        cadena+='<td><button class="myButton">modificar</button></td>';
+        cadena+='<td><button class="myButton2">Elegir</button></td>';
         cadena+='</tr>';
       });
       conte_tabla.innerHTML=cadena;
-      lista();
+      lista2();
   });
 }
 
@@ -611,7 +612,79 @@ btn_quitar.addEventListener('click',quitListaProductos);
 btn_buscar.addEventListener('click',searchInventario);
 
 
+btn_vender.addEventListener('click',guardarVenta);
+async function descargarPDF(pdfBytes) {
+  const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'archivo.pdf';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+async function crearPDF() {
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage();
+  const { width, height } = page.getSize();
+  const fontSize = 20;
+  let contador=height;
+  contador=contador-fontSize;
+  let suma=0;
+  page.drawText('--------GRACIAS POR USAR REGISTER BOX-----------------',
+  { x: 0, y: contador, size: fontSize});
+  contador=contador-fontSize;
 
+  page.drawText('producto........cantidad........total',
+    { x: 0, y: contador, size: fontSize});
+    contador=contador-fontSize;
+  lista_de_productos.forEach((elemento)=>{
+    page.drawText(elemento.producto+'........'+elemento.cantidad+'........$'+elemento.total,
+    { x: 0, y: contador, size: fontSize});
+    contador=contador-fontSize;
+    suma=suma+elemento.total;
+  });
+
+  page.drawText('--------Total a pagar    '+ suma +'-----------------',
+  { x: 0, y: contador, size: fontSize});
+  contador=contador-fontSize;
+  const pdfBytes = await pdfDoc.save();
+  descargarPDF(pdfBytes);
+}
+
+
+async function guardarVenta(){
+  console,console.log(lista_de_productos);
+  conte_tabla.innerHTML='';
+  //const jsonData = JSON.stringify(lista_de_productos);           
+  await fetch('guardarventa.php', {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      }, 
+      body: JSON.stringify(lista_de_productos),
+  })
+  .then(response=>response.json())
+  .then(data=>{
+    let cadena='';
+      arr=[];
+      data.forEach(element => {
+        arr.push(element.id_producto);
+        cadena+='<tr>';
+        cadena+='<td>'+element.id_producto+'</td>';
+        cadena+='<td>'+element.producto_a+'</td>';
+        cadena+='<td>'+element.compra_a+'</td>';
+        cadena+='<td>'+element.venta_a+'</td>';
+        cadena+='<td>'+element.fecha_a+'</td>';
+        cadena+='<td>'+element.cantidad_a+'</td>';
+        cadena+='<td><button class="myButton2">Elegir</button></td>';
+        cadena+='</tr>';
+      });
+      conte_tabla.innerHTML=cadena;
+      lista2();
+  });
+}
 
 
 loginF();
