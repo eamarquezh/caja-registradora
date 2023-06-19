@@ -2,7 +2,7 @@
 
 include "conector.php";
 
-	$consulta = "select * from caja_registradora.venta;";
+	$consulta = "select * from venta;";
 	if (!$resultado = $conexion->query($consulta)) {
 		echo ('Noo');
 		exit;

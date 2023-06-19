@@ -9,7 +9,7 @@ $fecha_a = $_REQUEST['fecha_a'];
 $cantidad_a = $_REQUEST['cantidad_a'];
  
 
-$consulta = "select count(*)as conteo from caja_registradora.inventario where id_producto='$id_producto';";
+$consulta = "select count(*)as conteo from inventario where id_producto='$id_producto';";
 if (!$resultado = $conexion->query($consulta)) {
     echo json_encode('Noo');
     exit;
@@ -19,7 +19,7 @@ while ($array_registro = $resultado->fetch_assoc()) {
 }
 
 if($conteo>0){
-    $consulta = "UPDATE caja_registradora.inventario
+    $consulta = "UPDATE inventario
     SET producto_a = '$producto_a',
         compra_a = '$compra_a',
         venta_a = '$venta_a',
@@ -27,7 +27,7 @@ if($conteo>0){
         cantidad_a = '$cantidad_a'
     WHERE id_producto = '$id_producto';";
 }else{
-    $consulta = "INSERT caja_registradora.inventario(id_producto,producto_a,compra_a,venta_a,fecha_a,cantidad_a) 
+    $consulta = "INSERT inventario(id_producto,producto_a,compra_a,venta_a,fecha_a,cantidad_a) 
                 VALUE('$id_producto','$producto_a','$compra_a','$venta_a','$fecha_a','$cantidad_a');";
 }
 
@@ -39,7 +39,7 @@ if (!$resultado = $conexion->query($consulta)) {
 
 
 sleep(1);
-$consulta = "select * from caja_registradora.inventario;";
+$consulta = "select * from inventario;";
 if (!$resultado = $conexion->query($consulta)) {
     echo ('Noo');
     exit;

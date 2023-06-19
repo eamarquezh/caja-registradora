@@ -5,7 +5,7 @@ include 'conector.php';
 $id_producto = $_REQUEST['id_producto'];
 
 sleep(1);
-$consulta = "select * from caja_registradora.inventario where id_producto like '%$id_producto%' or producto_a like '%$id_producto%';";
+$consulta = "select * from inventario where id_producto like '%$id_producto%' or producto_a like '%$id_producto%';";
 if (!$resultado = $conexion->query($consulta)) {
     echo ('Noo');
     exit;

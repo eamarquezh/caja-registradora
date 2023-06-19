@@ -4,7 +4,7 @@ include 'conector.php';
 $username = $_REQUEST['usuario'];
 $password = $_REQUEST['contrasenia'];
  
-$consulta = "select * from caja_registradora.usuarios where usuario='$username' and clave ='$password' limit 1;";
+$consulta = "select * from usuarios where usuario='$username' and clave ='$password' limit 1;";
 if (!$resultado = $conexion->query($consulta)) {
     echo ('Noo');
     exit;

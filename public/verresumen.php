@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 include 'conector.php';
 
-$consulta = "select producto,sum(cantidad)as total from caja_registradora.venta group by producto limit 10;";
+$consulta = "select producto,sum(cantidad)as total from venta group by producto limit 10;";
 if (!$resultado = $conexion->query($consulta)) {
     echo ('Noo');
     exit;

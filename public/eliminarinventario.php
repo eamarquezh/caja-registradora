@@ -4,7 +4,7 @@ include 'conector.php';
 
 $id_producto = $_REQUEST['id_producto'];
 
-$consulta = "DELETE FROM caja_registradora.inventario
+$consulta = "DELETE FROM inventario
 WHERE id_producto = '$id_producto';";
 if (!$resultado = $conexion->query($consulta)) {
     echo ('Noo');
@@ -12,7 +12,7 @@ if (!$resultado = $conexion->query($consulta)) {
 }
 
 sleep(1);
-$consulta = "select * from caja_registradora.inventario;";
+$consulta = "select * from inventario;";
 if (!$resultado = $conexion->query($consulta)) {
     echo ('Noo');
     exit;

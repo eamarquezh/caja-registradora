@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 include 'conector.php';
 
-$consulta = "select * from caja_registradora.inventario;";
+$consulta = "select * from inventario;";
 if (!$resultado = $conexion->query($consulta)) {
     echo ('Noo');
     exit;

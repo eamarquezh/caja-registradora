@@ -4,7 +4,7 @@ include 'conector.php';
 
 $id_modificacion = $_REQUEST['id_modificacion'];
 
-$consulta = "select * from caja_registradora.inventario where id_producto='$id_modificacion' limit 1;";
+$consulta = "select * from inventario where id_producto='$id_modificacion' limit 1;";
 if (!$resultado = $conexion->query($consulta)) {
     echo ('Noo');
     exit;

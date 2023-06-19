@@ -13,7 +13,7 @@ foreach ($objetos as $objeto) {
 
 
         // Realiza la inserción en la tabla
-        $consulta = "UPDATE caja_registradora.inventario
+        $consulta = "UPDATE inventario
         SET cantidad_a = cantidad_a-$cantidad
         WHERE producto_a = '$producto';";
         // Ejecuta la consulta
@@ -23,7 +23,7 @@ foreach ($objetos as $objeto) {
         }
   
     // Realiza la inserción en la tabla
-    $consulta = "INSERT caja_registradora.venta(producto,cantidad,total,fechahora) 
+    $consulta = "INSERT venta(producto,cantidad,total,fechahora) 
     VALUE('$producto','$cantidad','$total',now());";
     // Ejecuta la consulta
     if (!$resultado = $conexion->query($consulta)) {
@@ -34,7 +34,7 @@ foreach ($objetos as $objeto) {
 
 
 sleep(1);
-$consulta = "select * from caja_registradora.inventario;";
+$consulta = "select * from inventario;";
 if (!$resultado = $conexion->query($consulta)) {
     echo ('Noo');
     exit;
